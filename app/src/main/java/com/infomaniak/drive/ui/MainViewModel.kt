@@ -60,7 +60,6 @@ class MainViewModel(appContext: Application) : AndroidViewModel(appContext) {
     }
 
     private val uiSettings by lazy { UiSettings(getApplication()) }
-    private val downloadWorkerUtils by lazy { DownloadWorkerUtils() }
 
     val currentFolder = MutableLiveData<File>()
     val currentFolderOpenAddFileBottom = MutableLiveData<File>()
@@ -448,7 +447,7 @@ class MainViewModel(appContext: Application) : AndroidViewModel(appContext) {
     }
 
     fun checkBulkDownloadStatus() = viewModelScope.launch {
-        val isRunning = downloadWorkerUtils.checkWorkerDownloadStatus(
+        val isRunning = DownloadOfflineFileManager.checkWorkerDownloadStatus(
             context = getContext(),
             ignoreSyncOffline = ignoreSyncOffline,
             workerName = BulkDownloadWorker.TAG)
@@ -456,11 +455,16 @@ class MainViewModel(appContext: Application) : AndroidViewModel(appContext) {
         ignoreSyncOffline = isRunning
     }
 
+    fun markFilesAsOffline(filesId: List<Int>) = viewModelScope.launch(Dispatchers.IO) {
+        FileController.getRealmInstance().use { realm ->
+            FileController.setFilesAsOffline(customRealm = realm, filesId = filesId)
+        }
+    }
+
     override fun onCleared() {
         realm.close()
         super.onCleared()
     }
-
 
     data class FileResult(
         val isSuccess: Boolean,
