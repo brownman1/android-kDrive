@@ -110,7 +110,7 @@ object AccountUtils : CredentialManager() {
         okHttpClient: OkHttpClient = HttpClient.okHttpClient,
     ) = withContext(Dispatchers.IO) {
 
-        val (userResult, user) = with(ApiRepository.getUserProfile(okHttpClient)) {
+        val (userResult, user) = with(ApiRepository.getUserProfile(okHttpClient, ignoreDefaultAvatar = false)) {
             result to (data ?: return@withContext)
         }
 

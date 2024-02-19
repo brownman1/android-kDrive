@@ -86,14 +86,15 @@ object ApiRoutes {
             "&actions[]=comment_create"
 
     fun getLastActivities(driveId: Int) =
-        "${filesURL(driveId)}/activities?$activitiesWithQuery,user&depth=unlimited&$activitiesActions"
+        "${filesURL(driveId)}/activities?$activitiesWithQuery,user&depth=unlimited&$activitiesActions&no_avatar_default=1"
 
-    fun getFileActivities(file: File) = "${fileURL(file)}/activities"
+    fun getFileActivities(file: File) = "${fileURL(file)}/activities?no_avatar_default=1"
 
     fun getFileActivities(driveId: Int, fileIds: String, fromDate: Long) =
         "${filesURL(driveId)}/activities/batch?$activitiesWithQuery&file_ids=$fileIds&from_date=$fromDate" +
                 "&actions[]=file_rename" +
-                "&actions[]=file_update"
+                "&actions[]=file_update" +
+                "&no_avatar_default=1"
 
     fun getTrashedFilesActivities(file: File) = "${trashURL(file)}/activities"
     //endregion
