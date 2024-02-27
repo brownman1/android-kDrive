@@ -188,13 +188,7 @@ class FileInfoActionsView @JvmOverloads constructor(
         editDocument.setOnClickListener { onItemClickListener.editDocumentClicked() }
         displayInfo.setOnClickListener { onItemClickListener.displayInfoClicked() }
         fileRights.setOnClickListener { onItemClickListener.fileRightsClicked() }
-        sendCopy.setOnClickListener {
-            if (currentFile.isFolder()) {
-                openAddFileBottom()
-            } else {
-                ownerFragment.requireContext().shareFile { CloudStorageProvider.createShareFileUri(context, currentFile) }
-            }
-        }
+        sendCopy.setOnClickListener { shareFile() }
         sharePublicLink.setOnClickListener { view ->
             view.isClickable = false
             onItemClickListener.sharePublicLink { view.isClickable = true }
@@ -241,6 +235,14 @@ class FileInfoActionsView @JvmOverloads constructor(
         renameFile.setOnClickListener { onItemClickListener.renameFileClicked() }
         deleteFile.setOnClickListener { onItemClickListener.deleteFileClicked() }
         goToFolder.setOnClickListener { onItemClickListener.goToFolder() }
+    }
+
+    private fun shareFile() {
+        if (currentFile.isFolder()) {
+            openAddFileBottom()
+        } else {
+            ownerFragment.requireContext().shareFile { CloudStorageProvider.createShareFileUri(context, currentFile) }
+        }
     }
 
     /**
