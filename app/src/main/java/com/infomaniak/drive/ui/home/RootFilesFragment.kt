@@ -20,6 +20,7 @@ package com.infomaniak.drive.ui.home
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,6 +77,7 @@ class RootFilesFragment : Fragment() {
         setupItems()
 
         updateAndObserveFiles()
+        observePendingFilesUpload()
         observeNavigateFileListTo()
         observeAndDisplayNetworkAvailability(
             mainViewModel = mainViewModel,
@@ -85,10 +87,22 @@ class RootFilesFragment : Fragment() {
         rootFilesUploadFileInProgressView.setUploadFileInProgress(this@RootFilesFragment, Utils.OTHER_ROOT_ID)
     }
 
-    override fun onResume() {
-        super.onResume()
-        showPendingFiles()
+    private fun observePendingFilesUpload() {
+        mainViewModel.getPendingFilesCountAsync()
+        mainViewModel.pendingUploadsCount.observe(viewLifecycleOwner) {
+            Log.e("gibran", "observePendingFilesUpload - it: ${it}")
+            binding.rootFilesUploadFileInProgressView.updateUploadFileInProgress(it)
+        }
+//        mainViewModel.getPendingFilesCount().observe(viewLifecycleOwner) {
+//            Log.e("gibran", "observePendingFilesUpload - it: ${it}")
+//            binding.rootFilesUploadFileInProgressView.updateUploadFileInProgress(it)
+//        }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        showPendingFiles()
+//    }
 
     private fun setupDriveToolbar() = with(binding) {
         collapsingToolbarLayout.title = AccountUtils.getCurrentDrive()!!.name
@@ -191,9 +205,9 @@ class RootFilesFragment : Fragment() {
         }
     }
 
-    private fun showPendingFiles() {
-        binding.rootFilesUploadFileInProgressView.updateUploadFileInProgress(UploadFile.getCurrentUserPendingUploadsCount())
-    }
+//    private fun showPendingFiles() {
+//        binding.rootFilesUploadFileInProgressView.updateUploadFileInProgress(UploadFile.getCurrentUserPendingUploadsCount())
+//    }
 
     data class FolderToOpen(val id: Int, val name: String)
 }

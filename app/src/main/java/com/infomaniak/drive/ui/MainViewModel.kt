@@ -350,6 +350,12 @@ class MainViewModel(appContext: Application) : AndroidViewModel(appContext) {
         emit(apiResponse)
     }
 
+    val pendingUploadsCount = MutableLiveData<Int>()
+
+    fun getPendingFilesCountAsync(folderId: Int? = null) {
+        UploadFile.getCurrentUserPendingUploadFile(folderId).addChangeListener { list -> pendingUploadsCount.postValue(list.count()) }
+    }
+
     fun observeDownloadOffline(context: Context) = WorkManager.getInstance(context).getWorkInfosLiveData(
         WorkQuery.Builder
             .fromUniqueWorkNames(arrayListOf(DownloadWorker.TAG))

@@ -20,6 +20,7 @@ package com.infomaniak.drive.ui.fileList
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -576,6 +577,7 @@ open class FileListFragment : MultiSelectFragment(MATOMO_CATEGORY), SwipeRefresh
         val isNotCurrentDriveRoot = folderId == ROOT_ID && findNavController().currentDestination?.id != R.id.fileListFragment
         if (!showPendingFiles || isNotCurrentDriveRoot) return
         fileListViewModel.getPendingFilesCount(folderId).observe(viewLifecycleOwner) { pendingFilesCount ->
+            Log.e("gibran", "showPendingFiles - pendingFilesCount: ${pendingFilesCount}")
             binding.uploadFileInProgressView.updateUploadFileInProgress(pendingFilesCount)
         }
     }

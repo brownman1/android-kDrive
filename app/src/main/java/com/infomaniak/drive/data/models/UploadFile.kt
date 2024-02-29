@@ -25,6 +25,7 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.lifecycle.MutableLiveData
 import com.infomaniak.drive.data.api.ApiRepository
 import com.infomaniak.drive.data.api.UploadTask
 import com.infomaniak.drive.data.cache.DriveInfosController
@@ -246,6 +247,21 @@ open class UploadFile(
         fun getCurrentUserPendingUploadsCount(folderId: Int? = null): Int {
             return getRealmInstance().use { realm ->
                 pendingUploadsQuery(realm, folderId, true, driveIds = currentDriveAndSharedWithMeIds()).count().toInt()
+            }
+        }
+
+        fun getCurrentUserPendingUploadFile(folderId: Int? = null) : RealmResults<UploadFile> {
+            return pendingUploadsQuery(getRealmInstance(), folderId, true, driveIds = currentDriveAndSharedWithMeIds()).findAll()
+        }
+
+        fun onCurrentUserPendingUploadsCountChanged(folderId: Int? = null, onValueChange: (Int) -> Unit) {
+            return getRealmInstance().use { realm ->
+                pendingUploadsQuery(realm, folderId, true, driveIds = currentDriveAndSharedWithMeIds())
+                    .findAllAsync()
+                    .addChangeListener { items ->
+//                        pendingUploadsCount.postValue(items.count())
+                        onValueChange(items.count())
+                    }
             }
         }
 
